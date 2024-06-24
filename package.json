@@ -1,0 +1,19 @@
+{
+  "name": "pebbles-game",
+  "version": "1.0.0",
+  "description": "Web Game with Pebbles",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zmoki/pebbles-game.git"
+  },
+  "author": "Zarema Khalilova",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Zmoki/pebbles-game/issues"
+  },
+  "homepage": "https://github.com/Zmoki/pebbles-game#readme"
+}
