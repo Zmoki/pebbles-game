@@ -6,9 +6,12 @@ interface Color {
 interface Pebble {
   x: number;
   y: number;
+  targetX: number;
+  targetY: number;
   radius: number;
   color: string;
   isPicked: boolean;
+  isAnimating: boolean;
 }
 
 interface Bowl {
@@ -39,9 +42,12 @@ function createPebble(x: number, y: number, radius: number): Pebble {
   return {
     x,
     y,
+    targetX: x,
+    targetY: y,
     radius,
     color: getRandomColor(),
     isPicked: false,
+    isAnimating: false,
   };
 }
 
@@ -123,6 +129,7 @@ function onDrag(clientX: number, clientY: number, game: PebbleGame) {
       if (isPointInside(pebble, x, y)) {
         game.draggedPebble = pebble;
         game.draggedPebble.isPicked = true;
+        game.draggedPebble.isAnimating = true;
         removePebbleFromBowl(bowl, pebble);
         updatePebbleCounts(game);
         return;
@@ -147,8 +154,8 @@ function onDragging(clientX: number, clientY: number, game: PebbleGame) {
   const y = clientY - rect.top;
 
   if (game.draggedPebble) {
-    game.draggedPebble.x = x;
-    game.draggedPebble.y = y;
+    game.draggedPebble.targetX = x;
+    game.draggedPebble.targetY = y;
   }
 
   // Change cursor to pointer when hovering over a pebble
@@ -180,6 +187,7 @@ function onDrop(game: PebbleGame) {
       if (containsPebble(bowl, game.draggedPebble)) {
         addPebbleToBowl(bowl, game.draggedPebble);
         addedToBowl = true;
+        game.draggedPebble.isAnimating = true;
         break;
       }
     }
@@ -232,13 +240,43 @@ function updatePebbleCounts(game: PebbleGame) {
   });
 }
 
+function animatePebble(pebble: Pebble) {
+  const easing = 0.2;
+  const dx = pebble.targetX - pebble.x;
+  const dy = pebble.targetY - pebble.y;
+
+  pebble.x += dx * easing;
+  pebble.y += dy * easing;
+
+  if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1) {
+    pebble.x = pebble.targetX;
+    pebble.y = pebble.targetY;
+    pebble.isAnimating = false;
+  }
+}
+
 function animate(game: PebbleGame) {
   game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
 
-  game.bowls.forEach(bowl => drawBowl(game.ctx, bowl));
-  game.loosePebbles.forEach(pebble => drawPebble(game.ctx, pebble));
+  game.bowls.forEach(bowl => {
+    drawBowl(game.ctx, bowl);
+    bowl.pebbles.forEach(pebble => {
+      if (pebble.isAnimating) {
+        animatePebble(pebble);
+      }
+      drawPebble(game.ctx, pebble);
+    });
+  });
+
+  game.loosePebbles.forEach(pebble => {
+    if (pebble.isAnimating) {
+      animatePebble(pebble);
+    }
+    drawPebble(game.ctx, pebble);
+  });
 
   if (game.draggedPebble) {
+    animatePebble(game.draggedPebble);
     drawPebble(game.ctx, game.draggedPebble);
   }
 
