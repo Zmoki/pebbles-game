@@ -2,9 +2,13 @@
   "name": "pebbles-game",
   "version": "1.0.0",
   "description": "Web Game with Pebbles",
-  "main": "index.js",
+  "source": "src/index.html",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check": "tsc --noEmit",
+    "start": "parcel",
+    "build": "parcel build"
   },
   "repository": {
     "type": "git",
@@ -15,5 +19,10 @@
   "bugs": {
     "url": "https://github.com/Zmoki/pebbles-game/issues"
   },
-  "homepage": "https://github.com/Zmoki/pebbles-game#readme"
+  "homepage": "https://github.com/Zmoki/pebbles-game#readme",
+  "devDependencies": {
+    "@parcel/transformer-typescript-tsc": "^2.12.0",
+    "parcel": "^2.12.0",
+    "typescript": "^5.5.2"
+  }
 }
