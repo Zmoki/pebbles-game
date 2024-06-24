@@ -9,6 +9,10 @@
 </head>
 <body>
 <h1>Game with Pebbles</h1>
+<div class="wallet">
+  <button id="connectWallet">Connect Wallet</button>
+  <span id="walletAddresses"></span>
+</div>
 <div class="game-container">
   <canvas id="game" width="600" height="300"></canvas>
   <div class="bowl-info">
@@ -17,5 +21,6 @@
   </div>
 </div>
   <script type="module" src="index.ts"></script>
+  <script type="module" src="web3.ts"></script>
 </body>
 </html>

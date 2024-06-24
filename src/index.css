@@ -17,3 +17,10 @@ body {
   display: flex;
   justify-content: space-around;
 }
+.wallet {
+  display: inline-flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 20px;
+}
