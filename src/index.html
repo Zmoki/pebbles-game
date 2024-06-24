@@ -8,8 +8,14 @@
   <link href="index.css" rel="stylesheet">
 </head>
 <body>
-  <h1>Game with Pebbles</h1>
-  <canvas height="400" id="canvas" width="800"></canvas>
+<h1>Game with Pebbles</h1>
+<div class="game-container">
+  <canvas id="game" width="600" height="300"></canvas>
+  <div class="bowl-info">
+    <div>Bowl 1: <span class="pebble-count">0</span> pebbles</div>
+    <div>Bowl 2: <span class="pebble-count">0</span> pebbles</div>
+  </div>
+</div>
   <script type="module" src="index.ts"></script>
 </body>
 </html>
