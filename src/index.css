@@ -1,4 +1,4 @@
-body {
+.page {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
@@ -9,6 +9,9 @@ body {
   justify-content: center;
   align-items: center;
   background-color: #f0f0f0;
+}
+.page__footer {
+  padding: 20px;
 }
 #game {
   background: #0062B9;
