@@ -198,16 +198,30 @@ function initializePebbles(bowls: Bowl[]) {
 function addEventListeners(game: PebbleGame) {
   game.canvas.addEventListener('mousedown', e =>
     onDrag(e.clientX, e.clientY, game));
-  game.canvas.addEventListener('touchstart', ev =>
-    onDrag(ev.touches[0].clientX, ev.touches[0].clientY, game), {passive: true});
+
+  game.canvas.addEventListener('touchstart', ev => {
+    ev.preventDefault();
+    onDrag(ev.touches[0].clientX, ev.touches[0].clientY, game);
+  }, { passive: false });
+
   game.canvas.addEventListener('mousemove', e =>
     onDragging(e.clientX, e.clientY, game));
-  game.canvas.addEventListener('touchmove', ev =>
-    onDragging(ev.touches[0].clientX, ev.touches[0].clientY, game), {passive: true});
+
+  game.canvas.addEventListener('touchmove', ev => {
+    ev.preventDefault();
+    onDragging(ev.touches[0].clientX, ev.touches[0].clientY, game);
+  }, { passive: false });
+
   game.canvas.addEventListener('mouseup', () =>
     onDrop(game));
-  game.canvas.addEventListener('touchend', () =>
-    onDrop(game));
+
+  game.canvas.addEventListener('touchend', ev => {
+    ev.preventDefault();
+    onDrop(game);
+  }, { passive: false });
+
+  document.body.addEventListener('touchstart', ev => ev.preventDefault(), { passive: false });
+  document.body.addEventListener('touchmove', ev => ev.preventDefault(), { passive: false });
 }
 
 function updatePebbleCounts(game: PebbleGame) {
