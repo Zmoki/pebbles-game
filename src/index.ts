@@ -12,6 +12,9 @@ interface Pebble {
   color: string;
   isPicked: boolean;
   isAnimating: boolean;
+  originalRadius: number;
+  oscillationPhase: number;
+  oscillationAmplitude: number;
 }
 
 interface Bowl {
@@ -45,32 +48,24 @@ function createPebble(x: number, y: number, radius: number): Pebble {
     targetX: x,
     targetY: y,
     radius,
+    originalRadius: radius,
     color: getRandomColor(),
     isPicked: false,
     isAnimating: false,
+    oscillationPhase: 0,
+    oscillationAmplitude: 0,
   };
 }
 
 function drawPebble(ctx: CanvasRenderingContext2D, pebble: Pebble) {
+  const oscillation = Math.sin(pebble.oscillationPhase) * pebble.oscillationAmplitude;
+  const currentRadius = pebble.radius + oscillation;
+
   ctx.beginPath();
-  ctx.arc(pebble.x, pebble.y, pebble.radius, 0, Math.PI * 2);
-
-  if (pebble.isPicked) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetX = 5;
-    ctx.shadowOffsetY = 5;
-  }
-
+  ctx.arc(pebble.x, pebble.y, currentRadius, 0, Math.PI * 2);
   ctx.fillStyle = pebble.color;
   ctx.fill();
   ctx.closePath();
-
-  // Reset shadow
-  ctx.shadowColor = 'transparent';
-  ctx.shadowBlur = 0;
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 0;
 }
 
 function isPointInside(pebble: Pebble, x: number, y: number): boolean {
@@ -130,6 +125,8 @@ function onDrag(clientX: number, clientY: number, game: PebbleGame) {
         game.draggedPebble = pebble;
         game.draggedPebble.isPicked = true;
         game.draggedPebble.isAnimating = true;
+        game.draggedPebble.radius = game.draggedPebble.originalRadius * 1.2; // Increase size by 20%
+        game.draggedPebble.oscillationAmplitude = 2; // Start oscillation
         removePebbleFromBowl(bowl, pebble);
         updatePebbleCounts(game);
         return;
@@ -167,6 +164,7 @@ function onDrop(game: PebbleGame) {
         addPebbleToBowl(bowl, game.draggedPebble);
         addedToBowl = true;
         game.draggedPebble.isAnimating = true;
+        game.draggedPebble.oscillationAmplitude = 4;
         break;
       }
     }
@@ -227,9 +225,22 @@ function animatePebble(pebble: Pebble) {
   pebble.x += dx * easing;
   pebble.y += dy * easing;
 
-  if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1) {
+  // Handle size change
+  if (!pebble.isPicked) {
+    pebble.radius += (pebble.originalRadius - pebble.radius) * easing;
+  }
+
+  // Handle oscillation
+  pebble.oscillationPhase += 0.3;
+  pebble.oscillationAmplitude *= 0.95; // Damping
+
+  if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1 &&
+    Math.abs(pebble.radius - pebble.originalRadius) < 0.1 &&
+    pebble.oscillationAmplitude < 0.1) {
     pebble.x = pebble.targetX;
     pebble.y = pebble.targetY;
+    pebble.radius = pebble.originalRadius;
+    pebble.oscillationAmplitude = 0;
     pebble.isAnimating = false;
   }
 }
