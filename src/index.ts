@@ -196,32 +196,46 @@ function initializePebbles(bowls: Bowl[]) {
 }
 
 function addEventListeners(game: PebbleGame) {
-  game.canvas.addEventListener('mousedown', e =>
-    onDrag(e.clientX, e.clientY, game));
+  let isDragging = false;
+
+  game.canvas.addEventListener('mousedown', e => {
+    isDragging = true;
+    onDrag(e.clientX, e.clientY, game);
+  });
 
   game.canvas.addEventListener('touchstart', ev => {
+    isDragging = true;
     ev.preventDefault();
     onDrag(ev.touches[0].clientX, ev.touches[0].clientY, game);
   }, { passive: false });
 
-  game.canvas.addEventListener('mousemove', e =>
-    onDragging(e.clientX, e.clientY, game));
+  window.addEventListener('mousemove', e => {
+    if (isDragging) {
+      onDragging(e.clientX, e.clientY, game);
+    }
+  });
 
-  game.canvas.addEventListener('touchmove', ev => {
-    ev.preventDefault();
-    onDragging(ev.touches[0].clientX, ev.touches[0].clientY, game);
+  window.addEventListener('touchmove', ev => {
+    if (isDragging) {
+      ev.preventDefault();
+      onDragging(ev.touches[0].clientX, ev.touches[0].clientY, game);
+    }
   }, { passive: false });
 
-  game.canvas.addEventListener('mouseup', () =>
-    onDrop(game));
+  window.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      onDrop(game);
+    }
+  });
 
-  game.canvas.addEventListener('touchend', ev => {
-    ev.preventDefault();
-    onDrop(game);
+  window.addEventListener('touchend', ev => {
+    if (isDragging) {
+      isDragging = false;
+      ev.preventDefault();
+      onDrop(game);
+    }
   }, { passive: false });
-
-  document.body.addEventListener('touchstart', ev => ev.preventDefault(), { passive: false });
-  document.body.addEventListener('touchmove', ev => ev.preventDefault(), { passive: false });
 }
 
 function updatePebbleCounts(game: PebbleGame) {
