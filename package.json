@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "check": "tsc --noEmit",
-    "start": "parcel",
+    "start": "parcel -p 1313",
     "build": "parcel build"
   },
   "repository": {
