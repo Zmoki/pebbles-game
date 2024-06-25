@@ -157,27 +157,6 @@ function onDragging(clientX: number, clientY: number, game: PebbleGame) {
     game.draggedPebble.targetX = x;
     game.draggedPebble.targetY = y;
   }
-
-  // Change cursor to pointer when hovering over a pebble
-  let isOverPebble = false;
-  for (const bowl of game.bowls) {
-    for (const pebble of bowl.pebbles) {
-      if (isPointInside(pebble, x, y)) {
-        isOverPebble = true;
-        break;
-      }
-    }
-    if (isOverPebble) break;
-  }
-  if (!isOverPebble) {
-    for (const pebble of game.loosePebbles) {
-      if (isPointInside(pebble, x, y)) {
-        isOverPebble = true;
-        break;
-      }
-    }
-  }
-  game.canvas.style.cursor = isOverPebble ? 'pointer' : 'default';
 }
 
 function onDrop(game: PebbleGame) {
